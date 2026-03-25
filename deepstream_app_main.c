@@ -74,6 +74,12 @@ GOptionEntry entries[] = {
   ,
 };
 
+static ExternalBboxCallback g_external_bbox_cb = NULL;
+
+void set_external_bbox_callback(ExternalBboxCallback cb) {
+    g_external_bbox_cb = cb;
+}
+
 /**
  * Callback function to be called once all inferences (Primary + Secondary)
  * are done. This is opportunity to modify content of the metadata.
@@ -85,36 +91,41 @@ static void
 all_bbox_generated (AppCtx * appCtx, GstBuffer * buf,
     NvDsBatchMeta * batch_meta, guint index)
 {
-  guint num_male = 0;
-  guint num_female = 0;
-  guint num_objects[128];
-
-  memset (num_objects, 0, sizeof (num_objects));
+  DstObjectData obj_list[128]; // Max 128 nesne tutacak dizi
+  int num_objects = 0;
 
   for (NvDsMetaList * l_frame = batch_meta->frame_meta_list; l_frame != NULL;
       l_frame = l_frame->next) {
     NvDsFrameMeta *frame_meta = l_frame->data;
+    
+    num_objects = 0; // Her frame için sıfırla
+
     for (NvDsMetaList * l_obj = frame_meta->obj_meta_list; l_obj != NULL;
         l_obj = l_obj->next) {
       NvDsObjectMeta *obj = (NvDsObjectMeta *) l_obj->data;
-      if (obj->unique_component_id ==
-          (gint) appCtx->config.primary_gie_config.unique_id) {
-        if (obj->class_id >= 0 && obj->class_id < 128) {
-          num_objects[obj->class_id]++;
-        }
-        if (appCtx->person_class_id > -1
-            && obj->class_id == appCtx->person_class_id) {
-          if (strstr (obj->text_params.display_text, "Man")) {
-            str_replace (obj->text_params.display_text, "Man", "");
-            str_replace (obj->text_params.display_text, "Person", "Man");
-            num_male++;
-          } else if (strstr (obj->text_params.display_text, "Woman")) {
-            str_replace (obj->text_params.display_text, "Woman", "");
-            str_replace (obj->text_params.display_text, "Person", "Woman");
-            num_female++;
+      
+      // Nesne verilerini array'e doldur
+      if (num_objects < 128) {
+          obj_list[num_objects].class_id = obj->class_id;
+          obj_list[num_objects].tracking_id = obj->object_id; // Tracker ID'si
+          obj_list[num_objects].left = obj->rect_params.left;
+          obj_list[num_objects].top = obj->rect_params.top;
+          obj_list[num_objects].width = obj->rect_params.width;
+          obj_list[num_objects].height = obj->rect_params.height;
+          
+          if (obj->obj_label) {
+              strncpy(obj_list[num_objects].label, obj->obj_label, 127);
+          } else {
+              obj_list[num_objects].label[0] = '\0';
           }
-        }
+          num_objects++;
       }
+
+    }
+
+    // Eğer dışarıdan bir callback tanımlanmışsa ve ekranda nesne varsa, veriyi C++'a fırlat
+    if (g_external_bbox_cb != NULL && num_objects > 0) {
+        g_external_bbox_cb(obj_list, num_objects, frame_meta->frame_num);
     }
   }
 }
@@ -602,8 +613,8 @@ recreate_pipeline_thread_func (gpointer arg)
   return ret;
 }
 
-int
-main (int argc, char *argv[])
+int 
+deepstream_app_main (int argc, char *argv[])
 {
   GOptionContext *ctx = NULL;
   GOptionGroup *group = NULL;

@@ -15,7 +15,7 @@ ifeq ($(CUDA_VER),)
   $(error "CUDA_VER is not set")
 endif
 
-APP:= deepstream-app
+APP:= libdeepstream-app.so
 
 TARGET_DEVICE = $(shell gcc -dumpmachine | cut -f1 -d -)
 
@@ -29,8 +29,8 @@ ifeq ($(TARGET_DEVICE),aarch64)
 endif
 
 SRCS:= $(wildcard *.c) $(wildcard *.cpp)
-SRCS+= $(wildcard ../../apps-common/src/*.c)
-SRCS+= $(wildcard ../../apps-common/src/deepstream-yaml/*.cpp)
+SRCS+= $(wildcard /opt/nvidia/deepstream/deepstream-7.1/sources/apps/apps-common/src/*.c)
+SRCS+= $(wildcard /opt/nvidia/deepstream/deepstream-7.1/sources/apps/apps-common/src/deepstream-yaml/*.cpp)
 
 INCS:= $(wildcard *.h)
 
@@ -39,8 +39,8 @@ PKGS:= gstreamer-1.0 gstreamer-video-1.0 x11 json-glib-1.0
 OBJS:= $(SRCS:.c=.o)
 OBJS:= $(OBJS:.cpp=.o)
 
-CFLAGS+= -I./ -I../../apps-common/includes \
-		 -I../../../includes -DDS_VERSION_MINOR=1 -DDS_VERSION_MAJOR=5 \
+CFLAGS+= -fPIC -I./ -I/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/sources/apps/apps-common/includes \
+		 -I/opt/nvidia/deepstream/deepstream-7.1/sources/includes -DDS_VERSION_MINOR=1 -DDS_VERSION_MAJOR=5 \
 		 -I /usr/local/cuda-$(CUDA_VER)/include
 
 LIBS:= -L/usr/local/cuda-$(CUDA_VER)/lib64/ -lcudart
@@ -62,7 +62,7 @@ all: $(APP)
 	$(CXX) -c -o $@ $(CFLAGS) $<
 
 $(APP): $(OBJS) Makefile
-	$(CXX) -o $(APP) $(OBJS) $(LIBS)
+	$(CXX) -shared -o $(APP) $(OBJS) $(LIBS)
 
 install: $(APP)
 	cp -rv $(APP) $(APP_INSTALL_DIR)
