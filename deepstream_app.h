@@ -38,7 +38,6 @@
 #include "gst-nvdscustommessage.h"
 #include "gst-nvdscommonconfig.h"
 
-// Kendi C++ kodumuza aktaracağımız veri yapısı
 typedef struct {
     gint class_id;
     guint64 tracking_id;
@@ -49,13 +48,10 @@ typedef struct {
     char label[128];
 } DstObjectData;
 
-// Dışarıdan enjekte edeceğimiz callback fonksiyonunun imza yapısı
 typedef void (*ExternalBboxCallback)(DstObjectData* obj_list, int num_objects, int frame_num);
 
-// C++ dosyamızdan bu fonksiyonu çağırarak callback'i set edeceğiz
 void set_external_bbox_callback(ExternalBboxCallback cb);
 
-// Eski main fonksiyonumuzun yeni adı
 int deepstream_app_main (int argc, char *argv[]);
 
 #ifdef __cplusplus

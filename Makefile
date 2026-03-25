@@ -16,6 +16,7 @@ ifeq ($(CUDA_VER),)
 endif
 
 APP:= libdeepstream-app.so
+BUILD_DIR:= build
 
 TARGET_DEVICE = $(shell gcc -dumpmachine | cut -f1 -d -)
 
@@ -36,36 +37,41 @@ INCS:= $(wildcard *.h)
 
 PKGS:= gstreamer-1.0 gstreamer-video-1.0 x11 json-glib-1.0
 
-OBJS:= $(SRCS:.c=.o)
-OBJS:= $(OBJS:.cpp=.o)
+VPATH := $(sort $(dir $(SRCS)))
+
+OBJS := $(addprefix $(BUILD_DIR)/, $(notdir $(patsubst %.c, %.o, $(filter %.c, $(SRCS)))))
+OBJS += $(addprefix $(BUILD_DIR)/, $(notdir $(patsubst %.cpp, %.o, $(filter %.cpp, $(SRCS)))))
 
 CFLAGS+= -fPIC -I./ -I/opt/nvidia/deepstream/deepstream-$(NVDS_VERSION)/sources/apps/apps-common/includes \
-		 -I/opt/nvidia/deepstream/deepstream-7.1/sources/includes -DDS_VERSION_MINOR=1 -DDS_VERSION_MAJOR=5 \
-		 -I /usr/local/cuda-$(CUDA_VER)/include
+         -I/opt/nvidia/deepstream/deepstream-7.1/sources/includes -DDS_VERSION_MINOR=1 -DDS_VERSION_MAJOR=5 \
+         -I /usr/local/cuda-$(CUDA_VER)/include
 
 LIBS:= -L/usr/local/cuda-$(CUDA_VER)/lib64/ -lcudart
 
 LIBS+= -L$(LIB_INSTALL_DIR) -lnvdsgst_meta -lnvds_meta -lnvdsgst_helper -lnvdsgst_customhelper \
-	  -lnvdsgst_smartrecord -lnvds_utils -lnvds_msgbroker -lm -lyaml-cpp \
+      -lnvdsgst_smartrecord -lnvds_utils -lnvds_msgbroker -lm -lyaml-cpp \
     -lcuda -lgstrtspserver-1.0 -ldl -Wl,-rpath,$(LIB_INSTALL_DIR)
 
 CFLAGS+= $(shell pkg-config --cflags $(PKGS))
 
 LIBS+= $(shell pkg-config --libs $(PKGS))
 
-all: $(APP)
+all: $(BUILD_DIR)/$(APP)
 
-%.o: %.c $(INCS) Makefile
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/%.o: %.c $(INCS) Makefile | $(BUILD_DIR)
 	$(CC) -c -o $@ $(CFLAGS) $<
 
-%.o: %.cpp $(INCS) Makefile
+$(BUILD_DIR)/%.o: %.cpp $(INCS) Makefile | $(BUILD_DIR)
 	$(CXX) -c -o $@ $(CFLAGS) $<
 
-$(APP): $(OBJS) Makefile
-	$(CXX) -shared -o $(APP) $(OBJS) $(LIBS)
+$(BUILD_DIR)/$(APP): $(OBJS) Makefile
+	$(CXX) -shared -o $@ $(OBJS) $(LIBS)
 
-install: $(APP)
-	cp -rv $(APP) $(APP_INSTALL_DIR)
+install: $(BUILD_DIR)/$(APP)
+	cp -rv $(BUILD_DIR)/$(APP) $(APP_INSTALL_DIR)
 
 clean:
-	rm -rf $(OBJS) $(APP)
+	rm -rf $(BUILD_DIR)
