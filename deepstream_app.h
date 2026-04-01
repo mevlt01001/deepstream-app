@@ -48,9 +48,9 @@ typedef struct {
     char label[128];
 } DstObjectData;
 
-typedef void (*ExternalBboxCallback)(DstObjectData* obj_list, int num_objects, int frame_num);
+typedef void ExternalBboxCallback (DstObjectData* obj_list, int num_objects, int frame_num);
 
-void set_external_bbox_callback(ExternalBboxCallback cb);
+void set_external_bbox_callback(ExternalBboxCallback* cb);
 
 int deepstream_app_main (int argc, char *argv[]);
 

@@ -1,2 +1,9 @@
 /.vscode
 /build
+/sound_control_AI
+*zip
+*.tgz
+*.tar.gz
+*.log
+*.tmp
+/libtorch

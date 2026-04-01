@@ -74,9 +74,9 @@ GOptionEntry entries[] = {
   ,
 };
 
-static ExternalBboxCallback g_external_bbox_cb = NULL;
+static ExternalBboxCallback* g_external_bbox_cb = NULL;
 
-void set_external_bbox_callback(ExternalBboxCallback cb) {
+void set_external_bbox_callback(ExternalBboxCallback* cb) {
     g_external_bbox_cb = cb;
 }
 

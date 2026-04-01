@@ -1,16 +1,22 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+// #include <torch/script.h> // LibTorch için
+// #include <onnxruntime_cxx_api.h> // ONNX Runtime için
 #include "AIClass.hpp"
 
 extern "C" {
     AI* global_ai_instance = nullptr; // Global AI instance to be used in the callback
-
     void my_external_bbox_callback(DstObjectData* obj_list, int num_objects, int frame_num) {
         if (global_ai_instance != nullptr) {
             global_ai_instance->process_bboxes(obj_list, num_objects, frame_num);
         }
     }
+}
+
+AI::AI(char* argv[]) {
+    this->ds_config_file_path = this->get_config_file(argv);
+    std::cout << "AI class initialized with config file: " << ds_config_file_path << std::endl;
 }
 
 std::string AI::get_config_file(char* argv[]) {
@@ -34,7 +40,7 @@ void AI::process_bboxes(DstObjectData* obj_list, int num_objects, int frame_num)
 }
 
 int main(int argc, char* argv[]) {
-    AI* ai = new AI();
+    AI* ai = new AI(argv); exit(0); // Sadece AI sınıfını test etmek için main fonksiyonunu ekledim. Gerçek uygulamada deepstream_app_main çağrılacak.
     global_ai_instance = ai; // Set the global AI instance for the callback
     
     std::string config_file = global_ai_instance->get_config_file(argv);
