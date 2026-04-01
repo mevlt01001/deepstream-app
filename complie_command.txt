@@ -1,0 +1,5 @@
+export CUDA_VER=12.6
+make
+g++ AIClas.cpp -o my_ai_app -I/usr/include/gstreamer-1.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/opt/nvidia/deepstream/deepstream-7.1/sources/apps/apps-common/includes -I/opt/nvidia/deepstream/deepstream-7.1/sources/includes -I/usr/local/cuda-12.6/include -L. build/libdeepstream-app.so -L/opt/nvidia/deepstream/deepstream-7.1/lib/ -lnvdsgst_meta -lnvds_meta -lnvds_utils -Wl,-rpath,. -Wl,-rpath,/opt/nvidia/deepstream/deepstream-7.1/lib/
+./my_ai_app -c /home/orin2/Downloads/customDeepstreamSample/deepstream_app.txt
+
