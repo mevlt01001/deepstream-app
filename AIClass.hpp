@@ -2,7 +2,7 @@
 #define AICLASS_HPP
 
 #include <string>
-#define AUDIO_FILE_PATH "./file.wav"
+#include <torch/torch.h>
 
 extern "C" {
     #include "deepstream_app.h"
