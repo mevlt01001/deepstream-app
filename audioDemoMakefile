@@ -4,38 +4,45 @@ CXX = g++
 # C++ Standardı
 CXXFLAGS = -std=c++17 -O3
 
-# Temel Yollar (Conda ve Torch klasörleri)
+# Base roots
 CONDA_ENV = /home/orin2/miniconda3/envs/libtorch
 TORCH_ROOT = $(CONDA_ENV)/lib/python3.10/site-packages/torch
-# İşte eksik olan o "gizli" klasör:
 TORCH_LIBS = $(CONDA_ENV)/lib/python3.10/site-packages/torch.libs
 
-# Header dosyalarının (include) aranacağı yollar
+# PyTorch, Deepstream, CUDA, and GStreamer paths
 INCLUDES = \
 	-I$(TORCH_ROOT)/include \
-	-I$(TORCH_ROOT)/include/torch/csrc/api/include
+	-I$(TORCH_ROOT)/include/torch/csrc/api/include \
+	-I/usr/include/gstreamer-1.0 \
+	-I/usr/include/glib-2.0 \
+	-I/usr/lib/aarch64-linux-gnu/glib-2.0/include \
+	-I/opt/nvidia/deepstream/deepstream-7.1/sources/apps/apps-common/includes \
+	-I/opt/nvidia/deepstream/deepstream-7.1/sources/includes \
+	-I/usr/local/cuda-12.6/include
 
-# Kütüphanelerin (.so dosyalarının) aranacağı yollar
+# Torch and DeepStream Lib paths
 LIB_DIRS = \
 	-L$(TORCH_ROOT)/lib \
 	-L$(TORCH_LIBS) \
-	-L$(CONDA_ENV)/lib
+	-L$(CONDA_ENV)/lib \
+	-L. \
+	-L/opt/nvidia/deepstream/deepstream-7.1/lib/
 
-# Çalışma anında (runtime) kütüphanelerin bulunabilmesi için RPATH ayarları
+# Runtime library paths for Torch and DeepStream
 LDFLAGS = \
 	-Wl,-rpath,$(TORCH_ROOT)/lib \
 	-Wl,-rpath,$(TORCH_LIBS) \
-	-Wl,-rpath,$(CONDA_ENV)/lib
+	-Wl,-rpath,$(CONDA_ENV)/lib \
+	-Wl,-rpath,. \
+	-Wl,-rpath,/opt/nvidia/deepstream/deepstream-7.1/lib/
 
-# Bağlanacak kütüphaneler (LibTorch)
-LIBS = -ltorch -ltorch_cpu -lc10
+# Libs to link against
+LIBS = -ltorch -ltorch_cpu -lc10 -lnvdsgst_meta -lnvds_meta -lnvds_utils build/libdeepstream-app.so
 
-# Derleme kuralları (Eğer undefined reference hatası alırsan burayı 0 yap)
 ABI_FLAG = -D_GLIBCXX_USE_CXX11_ABI=1
 
-# Hedef dosya adı
-TARGET = audio_reader
-SRC = demo.cpp
+TARGET = my_ai_app
+SRC = AIClas.cpp
 
 all: $(TARGET)
 

@@ -5,3 +5,7 @@ g++ AIClas.cpp -o my_ai_app -I/usr/include/gstreamer-1.0 -I/usr/include/glib-2.0
 
 wget https://download.pytorch.org/libtorch/cu126/libtorch-shared-with-deps-2.11.0%2Bcu126.zip
 unzip libtorch-shared-with-deps-2.11.0+cu126.zip 
+
+ pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://download.pytorch.org/whl/cpu
+
