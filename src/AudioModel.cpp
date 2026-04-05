@@ -8,20 +8,22 @@
 #include "miniaudio.h"
 #include "AudioModel.hpp"
 
-bool AudioModel::is_recording = false;
-torch::jit::script::Module AudioModel::model;
-ma_device AudioModel::device;
-ma_device_config AudioModel::deviceConfig;
-std::vector<float> AudioModel::audio_buffer;
-std::mutex AudioModel::buffer_mutex;
-std::string AudioModel::ds_config_file_path;              
-std::string AudioModel::audio_model_file_path;             
-int AudioModel::target_sr;                                      
-int AudioModel::max_seconds;                                     
-std::vector<bool> AudioModel::current_targets; 
-AudioModel* AudioModel::audio_model;                            
-std::atomic<bool> AudioModel::is_audio_busy{AudioModel::false};
-std::vector<bool> AudioModel::targets;          
+// bool AudioModel::is_recording = false;
+// torch::jit::script::Module AudioModel::model;
+// ma_device AudioModel::device;
+// ma_device_config AudioModel::deviceConfig;
+// std::vector<float> AudioModel::audio_buffer;
+// std::mutex AudioModel::buffer_mutex;
+// std::string AudioModel::ds_config_file_path;              
+// std::string AudioModel::audio_model_file_path;             
+// int AudioModel::target_sr;                                      
+// int AudioModel::max_seconds;                                     
+// std::vector<bool> AudioModel::current_targets; 
+// AudioModel* AudioModel::audio_model;                            
+// std::atomic<bool> AudioModel::is_audio_busy{AudioModel::false};
+// std::vector<bool> AudioModel::targets;          
+
+// The definitions above are wrong. Should use these definition in constructor.
 
 AudioModel::AudioModel(const std::string& model_path, int sample_rate = 16000, int max_sec = 8) : 
     AudioModel::target_sr(sample_rate), AudioModel::max_seconds(max_sec) {
