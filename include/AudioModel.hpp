@@ -36,6 +36,11 @@ class AudioModel {
         torch::Tensor resample_audio(torch::Tensor audio_data, int orig_sr, int target_sr);
         torch::Tensor preprocess_audio(torch::Tensor audio_data, int max_seconds, int target_sr);
         torch::Tensor inference(torch::Tensor final_audio);
+
         std::vector<bool> get_targets() const;
+        bool get_is_recording() const;
+        std::vector<float>* get_audio_buffer();
+
+
 };
 #endif  // AUDIO_MODEL_HPP

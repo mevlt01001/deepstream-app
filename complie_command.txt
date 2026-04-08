@@ -3,10 +3,8 @@ miniconda create -n libtorch python=3.10
 (libtorch) pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 
 //make
+echo "export LD_LIBRARY_PATH=$(pwd)/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+source ~/.bashrc
+g++ main.cpp -Iinclude/ -L./build -lAI_class -o my_app
 
-g++ main.cpp -Iinclude/ -L./build -lAI_class \
--Wl,-rpath,./build \
--Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib/python3.10/site-packages/torch/lib \
--Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib/python3.10/site-packages/torch.libs \
--Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib \
--o my_app
+g++ main.cpp -Iinclude/ -L./build -lAI_class -Wl,-rpath,./build -Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib/python3.10/site-packages/torch/lib -Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib/python3.10/site-packages/torch.libs -Wl,-rpath-link,/home/orin2/miniconda3/envs/libtorch/lib -o my_app

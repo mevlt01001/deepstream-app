@@ -1,10 +1,12 @@
 #include <iostream>
 #include "AIClass.hpp"
 
+void check_mic(AI* ai_class);
+
 int main(int argc, char* argv[]) {
     AI* ai = new AI(
         "/home/orin2/Downloads/customDeepstreamSample/deepstream_app.txt", 
-        "audio_model.pt",           
+        "/home/orin2/workspace/deepstream-app/audio_model.pt",           
         16000,                      
         8                           
     ); 

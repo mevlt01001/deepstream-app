@@ -12,3 +12,4 @@
 *.onnx
 my_ai_app
 /src
+/lib    

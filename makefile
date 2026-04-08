@@ -90,3 +90,9 @@ $(BUILD_DIR)/%.o: %.c
 # clean (make clean)
 clean:
 	rm -rf $(BUILD_DIR)
+
+git_update:
+	@echo "Be careful!"
+	@echo "git reset --hard"
+	@echo "git fetch --all"
+	@echo "git pull"

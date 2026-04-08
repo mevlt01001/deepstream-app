@@ -21,10 +21,10 @@ class AI {
     public:
         AI(std::string ds_config_path, std::string audio_model_path, int sample_rate, int max_sec);
 
+
         void run_deepstream();
 
-        // Bounding box verileriyle başka işlemler yapacaksanız burayı kullanabilirsiniz.
-        // Ancak ses kaydı artık kullanıcının manuel kontrolünde olduğu için buradan çıkarıldı.
+        // Bounding box verileriyle işlemler
         void process_bboxes(DstObjectData* obj_list, int num_objects, int frame_num);
 
         // Ses kaydı başlatma fonksiyonu
@@ -32,6 +32,9 @@ class AI {
 
         // Ses kaydı durdurma fonksiyonu
         void stop_recording();
+
+        std::vector<float>* get_audio_data();
+        bool get_is_recording();
 
     private:
         void audio_inference();
