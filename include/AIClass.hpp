@@ -21,7 +21,6 @@ class AI {
     public:
         AI(std::string ds_config_path, std::string audio_model_path, int sample_rate, int max_sec);
 
-
         void run_deepstream();
 
         // Bounding box verileriyle işlemler
@@ -36,7 +35,10 @@ class AI {
         std::vector<float>* get_audio_data();
         bool get_is_recording();
 
+        void get_class_info();
+
     private:
-        void audio_inference();
+        void audio_inference(std::vector<bool>& targets);
+        void class_info();
 };
 #endif // AICLASS_HPP
