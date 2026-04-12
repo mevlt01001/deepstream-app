@@ -1,5 +1,5 @@
 # `AIClass`
-This is an orchestratior class. This works together [`AudioModel`](#`class-AudioModel`) which is for Audio recording, target recognition.
+This is an orchestrator class. This class works in conjunction with the [`AudioModel`](#`class-AudioModel`), which handles audio recording and target recognition functions.
 
 *TODO: Continue to DOC.*
 

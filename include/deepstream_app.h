@@ -38,8 +38,24 @@
 #include "gst-nvdscustommessage.h"
 #include "gst-nvdscommonconfig.h"
 
-typedef struct DstObjectData DstObjectData; // DstObjectData -> struct DstObjectData
-struct DstObjectData{
+// ### Beginning of Addition to deepstream/sources/apps/sample_apps/deepstream-app/deepstream_app.h ###
+
+// A type declaration for struct DsObjectData to DsObjectData
+typedef struct DsObjectData DsObjectData; 
+
+/**
+* A struct to store `NvDsObjectMeta` member such as `class_id` `object_id` `rect_params`.
+* 
+* Members:
+* `DsObjectData::class_id` refers to `NvDsObjectMeta::class_id` used get bbox class ID.
+* `DsObjectData::tracking_id` refers to `NvDsObjectMeta::object_id` used get bbox tracking ID
+* `DsObjectData::left` refers to `NvDsObjectMeta::rect_params.left` used get bbox left X
+* `DsObjectData::top` refers to `NvDsObjectMeta::rect_params.top` used get bbox top Y
+* `DsObjectData::width` refers to `NvDsObjectMeta::rect_params.width` used get bbox width
+* `DsObjectData::height` refers to `NvDsObjectMeta::rect_params.height` used get bbox height
+* `DsObjectData::label` refers to `NvDsObjectMeta::label` used get bbox class ID label
+*/
+struct DsObjectData{
     gint class_id;
     guint64 tracking_id;
     float left;
@@ -49,11 +65,13 @@ struct DstObjectData{
     char label[128];
 };
 
-typedef void ExternalBboxCallback (DstObjectData* obj_list, int num_objects, int frame_num);
+typedef void ExternalBboxCallback (DsObjectData* obj_list, int num_objects, int frame_num);
 
 void set_external_bbox_callback(ExternalBboxCallback* cb);
 
 int deepstream_app_main (int argc, char *argv[]);
+
+// ### End of Addition to deepstream/sources/apps/sample_apps/deepstream-app/deepstream_app.h #########
 
 #ifdef __cplusplus
 extern "C"

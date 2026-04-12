@@ -4,10 +4,19 @@
 #include <vector>
 #include <atomic>
 
-class AudioModel;
-typedef struct DstObjectData DstObjectData;
-struct DstObjectData;
+class AudioModel;                         // Audio Class Declaration `include/AudioModel.hpp`
+typedef struct DsObjectData DsObjectData; // A type declaration for struct DsObjectData to DsObjectData
+struct DsObjectData;                      // A struct to store `NvDsObjectMeta` member such as `class_id` `object_id` `rect_params`.
 
+
+/**
+ * This is an orchestrator class. This class works in conjunction with the
+ * [`AudioModel`](#class-AudioModel), which handles audio recording and 
+ * target recognition functions.
+ * 
+ */
+
+ // TODO: contibnue to AI Class DOC.
 class AI {
     private:
         std::string ds_config_file_path;              
@@ -24,7 +33,7 @@ class AI {
         void run_deepstream();
 
         // Bounding box verileriyle işlemler
-        void process_bboxes(DstObjectData* obj_list, int num_objects, int frame_num);
+        void process_bboxes(DsObjectData* obj_list, int num_objects, int frame_num);
 
         // Ses kaydı başlatma fonksiyonu
         void start_recording();
